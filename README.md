@@ -1,4 +1,4 @@
-# Project_ProgramLang
+# Programming Language 
 
 ## Names of participants
 Carla Perez Gavilan, A01023033
@@ -8,7 +8,7 @@ _Language Parser_ - Identifies the programming language and identifies the used 
 
 ## Description
 #### Detailed description of the problem to be solved. Give as much information as possible. Assume the reader of the document is Jon Snow!
-Gerardo 
+Our project will identify each programming language reserved keywords and change the color of each of them. It will also be able to identify variables and their type: global, constant, etc. 
 
 ## Programming Language 
 #### Indicate the language you will use for your implementation. You can chose from the languages seen in class.
