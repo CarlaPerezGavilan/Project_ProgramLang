@@ -24,9 +24,9 @@ Racket
 In this project, the parser will get as an input a plain text code that will generate an HTML and a CSS file for the output recognizing certain tokens from the text plain changing them the color.
 
 For this project we are going to use the following topic:
--Funcrtional programming: For this project we are going to use functional programming for solving it, just using functions that receives arguments and that gives another arguments at the output using recursion for avoid using variables that affect the state of the function.
--Recursion: Recursion will be used for reading the files for reading a line and calling the method for reading the next line and with patern matching do what is needed to do for each word of the lines.
--List: Lists are going to be used for that all the lines in the code are readed one by one putting everyone of them inside of a list
+-Funcrtional programming: For this project we are going to use functional programming for solving it, just using functions that receives arguments and that gives another arguments at the output using recursion for avoid using variables that affect the state of the function.<br />
+-Recursion: Recursion will be used for reading the files for reading a line and calling the method for reading the next line and with patern matching do what is needed to do for each word of the lines.<br />
+-List: Lists are going to be used for that all the lines in the code are readed one by one putting everyone of them inside of a list<br />
 -File I|O: As previously mentioned, the input file is going to be a plain text file code of a programming language and the outputs are going to be an HTML and a CSS file.
 
 ## References 
