@@ -1,8 +1,8 @@
 # Programming Language 
 
 ## Names of participants
-Carla Perez Gavilan, A01023033 &nbsp
-Gerardo Angeles Hernandez, A01338190
+Carla Perez Gavilan, A01023033<br />
+Gerardo Angeles Hernandez, A01338190<br />
 
 ## Title of the project
 _Language Parser_ - Identifies the programming language and identifies the used or reserved words 
