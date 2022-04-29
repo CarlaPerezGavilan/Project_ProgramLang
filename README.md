@@ -32,4 +32,5 @@ For this project we are going to use the following topic:
 -File I|O: As previously mentioned, the input file is going to be a plain text file code of a programming language and the outputs are going to be an HTML and a CSS file.
 
 ## References 
-Carla
+* Article on compilers: https://pgrandinetti.github.io/compilers/page/what-is-a-programming-language-parser/#:~:text=Parsing%20algorithms%20are%20not%20made,%2C%20valid%20for%20that%20grammar).
+* A guide to parsing Algorithms:  https://tomassetti.me/guide-parsing-algorithms-terminology/ 
