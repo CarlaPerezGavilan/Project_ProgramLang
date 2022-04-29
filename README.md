@@ -11,9 +11,9 @@ _Language Parser_ - Identifies the programming language and identifies the used 
 ## Description
 #### Detailed description of the problem to be solved. Give as much information as possible. Assume the reader of the document is Jon Snow!
 The problem we want to solve is understanding the structure of a programing language like Python, for different main reasons, for example, checking for syntax errors in a piece of code, identifying data, etc.
-We are going to create a parser, the meaning of parse is: divide something into parts to examine each part individually. For out proyect we want to analyze relationships between components from a piece of code given.
-The parse we want to develop is going to recieve commands and instructions and splits them into other pieces in programming, then checks if the information is enough to develop a data structure, with the main purpose of understanding the structure of the language given and for a purpose in the future like gathering information, data analysts, etcetera.
-Specifically, our project will recieve a name of a document, procces the document, and generate a new HTML document with the respective colors of the language reserved keywords and other elements. It will also be able to identify variables and their type: global, constant, etc. 
+We are going to create a parser, the meaning of parser is: divide something into parts to examine each part individually. For out proyect we want to analyze relationships between components from a piece of code given.
+The parse we want to develop is going to recieve commands and instructions and splits them, with the main purpose of understanding the structure of the language given and for a purpose in the future like gathering information, data analysts, etcetera.
+Specifically, our project will recieve a name of a document, procces it, and generate a new HTML document with the respective colors for reserved keywords  of the language and other elements. It will also be able to identify variables and their type: global, constant, etc. The HTML document is going to simulate the function of an IDE, that helps you understand code using colors for language syntax elements.
 
 ## Programming Language 
 #### Indicate the language you will use for your implementation. You can chose from the languages seen in class.
