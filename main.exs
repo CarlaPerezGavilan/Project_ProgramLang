@@ -1,7 +1,7 @@
 
 # Language Parser
 # 
-# Carla Perez Gavilan Del Castillo
+# Carla Perez Gavilan 
 # Gerardo Angeles 
 # David Medina
 
@@ -10,37 +10,47 @@ defmodule Parser do
   A module that recieves a python file and returns and html file 
   """
 
-   @doc """
-  Recieves name of file returns lines of file in list form
-  """
-  def read_file(file_name) do
- 
+    @doc """
+    Recieves name of file returns lines in file in list form
+    """
+    def read_file(file_name) do
+    
     end 
 
      @doc """
+    Process each line
+        """
+    def process_line(line) do
+        # Call identify variables
+        # Call identify operators
+        # Call identify keywords
+        # Format line html
+    end
+
+     @doc """
     Write output back to file 
-  """
-  def read_file(file_name) do
+    """
+    def read_file(file_name) do
  
     end 
 
    @doc """
-    Returns lines in html format 
+    Returns line in html format 
   """
-    def format_html(output) do
+    def format_html(line) do
 
     end 
 
- @doc """
+    @doc """
     Key word identifier: recieves line identifies keywords and gives them a different color in output file 
-  """
+    """
     def keyword_identify(line) do
 
     end
 
     @doc """
-    Operator identifier: recieves a line identifies operators and gives them a different color in output file 
-  """
+    Operator identifier (=, +, -, *): recieves a line identifies operators and gives them a different color in output file 
+    """
     def  operator_identify(line) do
    
     end
@@ -48,8 +58,8 @@ defmodule Parser do
     
     @doc """
     Variable identifier: recieves a line identifies variables and gives them a different color in output file 
-  """
-    def  variable(line) do
+    """
+    def variable_identify(line) do
    
     end
 end
