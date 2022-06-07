@@ -1,13 +1,24 @@
 <!doctype html>
-<html lang="en">
+<html lang='en'>
     <head>
-        <meta charset="utf-8">
+        <meta charset='utf-8'>
         <title>Random.html</title>
+        <style>
+            .comment {color: gray;}
+            .keyword {color: blue;}
+            .parenthesis {color: rgb(255, 0, 72)}
+            .string {color:rgb(84, 216, 23)}
+            .normalText {color: rgb(0, 0, 0)}
+            .function {color:rgb(255, 170, 0)}
+            .integer {color: darkgreen;}
+        </style>
     </head>
     <body>
-        <p><span style="color:#686868"># Program to generate a random number between 0 and 9</span></p>
-        <p><span style="color:#686868"># importing the random module</span></p>
-        <p><span style="color:#ff0000">import </span><span style="color:#000000">random</span></p>
-        <p><span style="color:#3366FF">print</span><span style="color:#d5ae00">(</span><span style="color:#000000">random.randint</span><span style="color:#9016d1">(</span><span style="color:#0000ff">0</span><span style="color:#000000">,</span><span style="color:#0000ff">9</span><span style="color:#9016d1">)</span><span style="color:#d5ae00">)</span></p>
+        <pre><span class="comment"># Program to generate a random number between 0 and 9</span></pre>
+        <pre></pre>
+        <pre><span class="comment"># importing the random module</span></pre>
+        <pre><span class="keyword">import </span><span class="normalText">random</span></pre>
+        <pre></pre>
+        <pre><span class="function">print</span><span class="parenthesis">(</span><span class="normalText">random.randint</span><span class="parenthesis">(</span><span class="integer">0</span><span class="normalText">,</span><span class="integer">9</span><span class="parenthesis">)</span><span class="parenthesis">)</span></pre>
     </body>
 </html>
