@@ -1,9 +1,8 @@
-
 # Language Python Parser
 #
 # Carla Perez Gavilan
 # Gerardo Angeles A01338190
-# David Medina
+# David Medina A01653311
 
 # To run the program
 # Parser.main("Random.py", "prueba.html")
@@ -53,7 +52,8 @@ defmodule Parser do
       line
       #search for the symbol # to decide that line is a comment
       |> Enum.map(&comment_search(&1))
-      #if no comment line, search fot keywords, variables, operators, functions,etc
+      #if no comment line, search fot keywords, variables, operators, functions
+      #,etc
       |> Enum.map(&not_comment_identifier(&1))
       #add the html information to a line
       |> Enum.map(&format_html(&1))
@@ -69,7 +69,14 @@ defmodule Parser do
       String.split(line, " ")
       # search for keywords
       |> Enum.map(&keyword_identify(&1))
-      #HERE ADD THE OTHER FUNCTIONS FOR SEARCH VARIABLES, NUMBERS, FUNCTIONS, ETC.
+      #HERE ADD THE OTHER FUNCTIONS FOR SEARCH VARIABLES, NUMBERS, FUNCTIONS,
+      #ETC.
+      ############# (here all the operators are identiifed)
+      #|> Enum.map(&arithmetic_operator_identify(&1))
+      |> Enum.map(&comparison_operator_identify(&1))
+      |> Enum.map(&bitwise_operator_identify(&1))
+      #|> Enum.map(&assigment_operator_identify(&1))
+      #############
       |> Enum.join(" ")
     else
       #if line return normal line
@@ -81,7 +88,8 @@ defmodule Parser do
   Search for comments and add the corresponding tag
   """
   def comment_search(to_analize) do
-    Regex.replace(~r/(#(.*))/, to_analize, &add_information(&1, "comment") , global: false)
+    Regex.replace(~r/(#(.*))/, to_analize, &add_information(&1, "comment") ,
+    global: false)
   end
 
   @doc """
@@ -102,6 +110,10 @@ defmodule Parser do
                   .normalText {color: rgb(0, 0, 0)}
                   .function {color:rgb(255, 170, 0)}
                   .integer {color: darkgreen;}
+                  .arithmetic_operators {color: rgb(50,90,150) }
+                  .comparison_operators {color: rgb(200,70,110)}
+                  .assigment_operators {color: rgb(100,0,10) }
+                  .bitwise_operators {color : rgb(180,100,200)}
               </style>
           </head>
           <body>"
@@ -133,22 +145,61 @@ defmodule Parser do
   end
 
   @doc """
-  Key word identifier: recieves line identifies keywords and gives them a different color in output file
+  Key word identifier: recieves line identifies keywords and gives them a
+  different color in output file
   """
   def keyword_identify(line) do
-    #Regex.replace(~r/(^((?!#).)*) *((and)|(exec)|(not)|(assert)|(finally)|(or)|(break)|(for)|(pass)|(class)|(from)|(print)|(continue)|(global)|(raise)|(def)|(if)|(return)|(del)|(import)|(try)|(elif)|(in)|(while)|(else)|(is)|(with)|(except)|(lambda)|(yield)) +/, line, &add_information(&1, "keyword") , global: false)
-    Regex.replace(~r/^((and)|(exec)|(not)|(assert)|(finally)|(or)|(break)|(for)|(pass)|(class)|(from)|(print)|(continue)|(global)|(raise)|(def)|(if)|(return)|(del)|(import)|(try)|(elif)|(in)|(while)|(else)|(is)|(with)|(except)|(lambda)|(yield))$/, line, &add_information(&1, "keyword") , global: false)
+    #Regex.replace(~r/(^((?!#).)*) *((and)|(exec)|(not)|(assert)|(finally)|(or)
+    #|(break)|(for)|(pass)|(class)|(from)|(print)|(continue)|(global)|(raise)|
+    #(def)|(if)|(return)|(del)|(import)|(try)|(elif)|(in)|(while)|(else)|(is)|
+    #(with)|(except)|(lambda)|(yield)) +/, line,
+    #&add_information(&1, "keyword") , global: false)
+    Regex.replace(~r/^((and)|(exec)|(not)|(assert)|(finally)|(or)|(break)|(for)
+    |(pass)|(class)|(from)|(print)|(continue)|(global)|(raise)|(def)|(if)|
+    (return)|(del)|(import)|(try)|(elif)|(in)|(while)|(else)|(is)|(with)|
+    (except)|(lambda)|(yield))$/, line,
+    &add_information(&1, "keyword"), global: false)
   end
 
   @doc """
-  Operator identifier (=, +, -, *): recieves a line identifies operators and gives them a different color in output file
+  arithmetic operators identifier: recieves a line identifies arithemtic
+  operators and gives them a different color in output file
   """
-  def  operator_identify(line) do
-
+  def arithmetic_operator_identify(line) do
+   # Regex.replace(~r/^((+)|(-)|(*)|(/)|(%)|(**)|(//))$/, line,
+   # &add_information(&1, "bitwise_operators") , global: false)
   end
 
   @doc """
-  Variable identifier: recieves a line identifies variables and gives them a different color in output file
+  Comparison perators identifier: recieves a line, identifies comparison
+  operators and gives them a different color in output file
+  """
+  def comparison_operator_identify(line) do
+    Regex.replace(~r/^((==)|(!=)|(>)|(<)|(>=)|(<=))$/, line,
+    &add_information(&1, "comparison_operators") , global: false)
+  end
+
+  @doc """
+  Bitwise perators identifier: recieves a line, identifies operators and
+  gives them a different color in output file
+  """
+  def bitwise_operator_identify(line) do
+    Regex.replace(~r/^((&)|(|)|(^)|(~)|(<<)|(>>))$/, line,
+    &add_information(&1, "bitwise_operators") , global: false)
+  end
+
+  @doc """
+  Assigent Operators identifier:: recieves a line, identifies assigment
+  operators and gives them a different color in output file
+  """
+  def assigment_operator_identify(line) do
+   # Regex.replace(~r/^((=)|(+=)|(-=)|(*=)|(/=)|(%=))$/, line,
+   # &add_information(&1, "assigment_operators") , global: false)
+  end
+
+  @doc """
+  Variable identifier: recieves a line identifies variables and gives them a
+  different color in output file
   """
   def variable_identify(line) do
 
