@@ -1,3 +1,4 @@
+
 # Language Python Parser
 #
 # Carla Perez Gavilan
@@ -72,10 +73,10 @@ defmodule Parser do
       #HERE ADD THE OTHER FUNCTIONS FOR SEARCH VARIABLES, NUMBERS, FUNCTIONS,
       #ETC.
       ############# (here all the operators are identiifed)
-      #|> Enum.map(&arithmetic_operator_identify(&1))
+      |> Enum.map(&arithmetic_operator_identify(&1))
       |> Enum.map(&comparison_operator_identify(&1))
       |> Enum.map(&bitwise_operator_identify(&1))
-      #|> Enum.map(&assigment_operator_identify(&1))
+      |> Enum.map(&assigment_operator_identify(&1))
       #############
       |> Enum.join(" ")
     else
@@ -116,9 +117,10 @@ defmodule Parser do
                   .bitwise_operators {color : rgb(180,100,200)}
               </style>
           </head>
-          <body>"
+          <body>
+          <pre>"
             <> body <>
-          "</body>
+          "</pre></body>
       </html>"
   end
 
@@ -141,7 +143,7 @@ defmodule Parser do
   function to add the HTML information to the line
   """
   def format_html(line) do
-    "<pre>#{line}</pre>"
+    "#{line}"
   end
 
   @doc """
@@ -166,8 +168,8 @@ defmodule Parser do
   operators and gives them a different color in output file
   """
   def arithmetic_operator_identify(line) do
-   # Regex.replace(~r/^((+)|(-)|(*)|(/)|(%)|(**)|(//))$/, line,
-   # &add_information(&1, "bitwise_operators") , global: false)
+    Regex.replace(~r'^((\+)|(-)|(\*)|(/)|(%)|(\*\*)|(//))$', line,
+    &add_information(&1, "arithmetic_operators") , global: false)
   end
 
   @doc """
@@ -175,7 +177,7 @@ defmodule Parser do
   operators and gives them a different color in output file
   """
   def comparison_operator_identify(line) do
-    Regex.replace(~r/^((==)|(!=)|(>)|(<)|(>=)|(<=))$/, line,
+    Regex.replace(~r'^((==)|(!=)|(>)|(<)|(>=)|(<=))$', line,
     &add_information(&1, "comparison_operators") , global: false)
   end
 
@@ -193,8 +195,8 @@ defmodule Parser do
   operators and gives them a different color in output file
   """
   def assigment_operator_identify(line) do
-   # Regex.replace(~r/^((=)|(+=)|(-=)|(*=)|(/=)|(%=))$/, line,
-   # &add_information(&1, "assigment_operators") , global: false)
+    Regex.replace(~r'^((=)|(\+=)|(-=)|(\*=)|(\/=)|(%=))$', line,
+    &add_information(&1, "assigment_operators") , global: false)
   end
 
   @doc """
