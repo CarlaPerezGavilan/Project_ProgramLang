@@ -94,6 +94,7 @@ defmodule Parser do
     function to search and to implement all the identifiers
     """
     def identifier(regex_expression, clase_name, new_Content, line) do
+      IO.inspect("entre"<>List.to_string(line))
       #defines if the regex functions apply to line, we use to
       #string because the line is a list
       if Regex.match?(~r/#{regex_expression}/, List.to_string(line)) do
