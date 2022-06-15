@@ -5,3 +5,8 @@ import random
 
 if 2 > 1 and 2 > 1:
     print(random.randint(0,9))
+
+myString = "string testing "
+
+if myString == "this":
+  print("hello")

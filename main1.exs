@@ -80,7 +80,7 @@ defmodule Parser do
         |> assigment_operator_identify()
         |> special_caracter_identify()
         |> digit_identify()
-        #|> string_identify() -------------TO DO-----------
+        |> string_identify() 
         |> everything_else_identify()
         |> white_spaces_identify()
         |> searcher()
@@ -222,8 +222,8 @@ defmodule Parser do
     crear este para cuando nos encontramos un string como "ejemplo de string"
     -------------TO DO-----------
     """
-    def string_identify() do
-
+    def string_identify([new_Content | line]) do
+      identifier("(\".*\")", "string", new_Content, line)
     end
 
 
@@ -286,6 +286,7 @@ defmodule Parser do
                   .everything_else {color: rgb(130,50,40)}
                   .special_operators {color: rgb(10,150,140)}
                   .digit {color: rgb(229,170,130)}
+                  .string {color: rgb(132, 230, 232)}
               </style>
           </head>
           <body>
@@ -305,3 +306,4 @@ defmodule Parser do
 
 
   end
+
