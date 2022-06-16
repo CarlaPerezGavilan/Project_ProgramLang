@@ -1,7 +1,7 @@
 
 # Language Python Parser
 #
-# Carla Perez Gavilan
+# Carla Perez Gavilan A01023033
 # Gerardo Angeles A01338190
 # David Medina A01653311
 
@@ -18,8 +18,8 @@ defmodule Parser do
     @doc """
     A module that recieves a python file and returns and html file
     """
-    def main(in_filename, out_filename) do
-
+    def main(in_filename) do
+      out_filename = get_html_filename(in_filename)
       new_content =
         in_filename
         #real file
@@ -31,7 +31,8 @@ defmodule Parser do
         # add the HTML body document
         |> add_HTML_base_information(out_filename)
 
-      write_file(out_filename, new_content)
+      write_file(new_content, out_filename)
+      
 
     end
 
@@ -80,12 +81,11 @@ defmodule Parser do
         |> comparison_operator_identify()
         |> bitwise_operator_identify()
         |> special_caracter_identify()
-        # function identify
+        |> class_function_identify()
         |> variable_identify()
         |> digit_identify()
         |> string_identify()
         |> white_spaces_identify()
-        # |> invalid_identify()
         |> searcher()
       else
         new_content
@@ -237,9 +237,8 @@ defmodule Parser do
 
 
     def class_function_identify([new_Content | line]) do
-      identifier("(\".*\")", "string", new_Content, line)
+      identifier("^([_a-zA-Z0-9]*\.)?[_a-zA-Z0-9]*(?=[\x28])", "class", new_Content, line)
     end
-
 
     @doc """
     White spaces identifier: calls identifier, sends regex, add corresponding class and send content
@@ -251,11 +250,10 @@ defmodule Parser do
    @doc """
     Function that matches every letter, it is important for out code not
     to cycle
-    #IF WE IDENTIFY EVERYTHING, WE CAN DELETE IT
     calls identifier, sends regex, add corresponding class and send content
     """
-    def everything_else_identify([new_Content | line]) do
-      identifier("^[a-zA-Z]+", "everything_else", new_Content, line)
+    def invalid_identify([new_Content | line]) do
+      # identifier("+", "invalid", new_Content, line)
     end
 
     @doc """
@@ -292,11 +290,12 @@ defmodule Parser do
                   .comparison_operators {color: rgb(200,70,110)}
                   .assigment_operators {color: rgb(100,0,10) }
                   .bitwise_operators {color : rgb(180,100,200)}
-                  .everything_else {color: rgb(130,50,40)}
+                  .invalid {color: rgb(130,50,40)}
                   .special_operators {color: rgb(10,150,140)}
                   .digit {color: rgb(229,170,130)}
                   .string {color: rgb(132, 230, 232)}
                   .variable {color: rgb(0, 227, 34)} 
+                  .class {color: rgb(245, 66, 176)} 
               </style>
           </head>
           <body>
@@ -306,12 +305,19 @@ defmodule Parser do
       </html>"
     end
 
+   @doc """
+    Write output back to file
+    """
+    def get_html_filename(in_file) do
+      name = Regex.run(~r/^[\S+]*(?=\.py)/, in_file)
+      List.first(name)<>".html"
+    end
 
     @doc """
     Write output back to file
     """
-    def write_file(file_name, content) do
-      File.write!(file_name, content)
+    def write_file(content, out_filename) do
+      File.write!(out_filename, content)
     end
 
 
