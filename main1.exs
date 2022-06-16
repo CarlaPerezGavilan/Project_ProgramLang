@@ -42,7 +42,7 @@ defmodule Parser do
     def read_file(file_name) do
       file_name
       |> File.stream!()
-      |> Enum.map(&String.trim/1)
+      |> Enum.map(&String.trim_trailing/1)
     end
 
 
@@ -74,15 +74,18 @@ defmodule Parser do
         list
         |> keyword_identify()
         |> comment_search()
+        # long comments 
+        |> assigment_operator_identify()
         |> arithmetic_operator_identify()
         |> comparison_operator_identify()
         |> bitwise_operator_identify()
-        |> assigment_operator_identify()
         |> special_caracter_identify()
+        # function identify
+        |> variable_identify()
         |> digit_identify()
-        |> string_identify() 
-        |> everything_else_identify()
+        |> string_identify()
         |> white_spaces_identify()
+        # |> invalid_identify()
         |> searcher()
       else
         new_content
@@ -94,7 +97,7 @@ defmodule Parser do
     function to search and to implement all the identifiers
     """
     def identifier(regex_expression, clase_name, new_Content, line) do
-      IO.inspect("entre"<>List.to_string(line))
+      # IO.inspect("enter :"<>List.to_string(line))
       #defines if the regex functions apply to line, we use to
       #string because the line is a list
       if Regex.match?(~r/#{regex_expression}/, List.to_string(line)) do
@@ -104,7 +107,7 @@ defmodule Parser do
         new_content_regex =
           Regex.replace(~r/#{regex_expression}/, List.to_string(line),
           &add_information(&1, clase_name), global: false)
-
+        IO.inspect("new_content_regex: "<>new_content_regex)
         #obtain the position of the last </span> in the new content regex
         #so we can split the line in already_formatted and rest of line
         array = Regex.run(~r/<\/span\>/, new_content_regex, return: :index)
@@ -137,7 +140,7 @@ defmodule Parser do
       identifier("^((and)|(exec)|(not)|(assert)|(finally)|(or)|(break)|(for)
       |(pass)|(class)|(from)|(print)|(continue)|(global)|(raise)|(def)|(if)|
       (return)|(del)|(import)|(try)|(elif)|(in)|(while)|(else)|(is)|(with)|
-      (except)|(lambda)|(yield))", "keyword", new_Content, line)
+      (except)|(lambda)|(yield))(?![a-zA-Z0-9])", "keyword", new_Content, line)
     end
 
 
@@ -168,7 +171,7 @@ defmodule Parser do
     calls identifier, sends regex, add corresponding class and send content
     """
     def comparison_operator_identify([new_Content | line]) do
-      identifier("^((==)|(!=)|(>)|(<)|(>=)|(<=))", "comparison_operator", new_Content, line)
+      identifier("^((>=)|(<=)|(==)|(!=)|(>)|(<))", "comparison_operator", new_Content, line)
     end
 
 
@@ -202,7 +205,7 @@ defmodule Parser do
     calls identifier, sends regex, add corresponding class and send content
     """
     def special_caracter_identify([new_Content | line]) do
-      identifier("^(([\x3A])|([\x28])|([\x29])|([\x2E])|([\x2C]))",
+      identifier("^(([\x3A])|([\x28])|([\x29])|([\x2E])|([\x2C])|([\x7B])|([\x7D])|([\x5B])|([\x5D]))",
       "special_operators", new_Content, line)
       #identifier("^([^a-zA-Z0-9_]))", "special_operators", new_Content, line)
     end
@@ -218,27 +221,34 @@ defmodule Parser do
 
 
     @doc """
-    -------------TO DO-----------
-    crear este para cuando nos encontramos un string como "ejemplo de string"
-    -------------TO DO-----------
+    crear este para cuando nos encontramos un string como ejemplo de string
     """
     def string_identify([new_Content | line]) do
+      identifier("^\".*?\"", "string", new_Content, line)
+    end
+
+
+    @doc """
+    identify variables
+    """
+    def variable_identify([new_Content | line]) do
+      identifier("^[_a-zA-Z][_a-zA-Z0-9]*", "variable", new_Content, line)
+    end
+
+
+    def class_function_identify([new_Content | line]) do
       identifier("(\".*\")", "string", new_Content, line)
     end
 
 
     @doc """
-    White spaces identifier, -------------TO DO-----------important for the indentation
-    seaches for white spaces
-    calls identifier, sends regex, add corresponding class and send content
-    DOEST WORK AT ALL ------- NEEEEEDS-------ATTENTION--------- -------------TO DO-----------
+    White spaces identifier: calls identifier, sends regex, add corresponding class and send content
     """
     def white_spaces_identify([new_Content | line]) do
       identifier("^\s+", "white_spaces", new_Content, line)
     end
 
-
-    @doc """
+   @doc """
     Function that matches every letter, it is important for out code not
     to cycle
     #IF WE IDENTIFY EVERYTHING, WE CAN DELETE IT
@@ -247,7 +257,6 @@ defmodule Parser do
     def everything_else_identify([new_Content | line]) do
       identifier("^[a-zA-Z]+", "everything_else", new_Content, line)
     end
-
 
     @doc """
     This function is called in identifier, it adds the corresponding
@@ -287,6 +296,7 @@ defmodule Parser do
                   .special_operators {color: rgb(10,150,140)}
                   .digit {color: rgb(229,170,130)}
                   .string {color: rgb(132, 230, 232)}
+                  .variable {color: rgb(0, 227, 34)} 
               </style>
           </head>
           <body>
