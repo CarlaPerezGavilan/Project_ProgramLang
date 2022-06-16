@@ -5,8 +5,7 @@
 # Gerardo Angeles A01338190
 # David Medina A01653311
 
-# To run the program
-# Parser.main("Random.py", "prueba.html")
+# To run the program: Parser.main("Random.py")
 
 defmodule Parser do
 
@@ -57,13 +56,12 @@ defmodule Parser do
 
 
     @doc """
-    Function that recieve a list, fists value is to save
+    Function that recieves a list, fists value is to save
     the line with the html format and the second value
     has the normal line information
     We search for every pattern, all regex functions start
-    with ^ so we only search for the begining of the line
-    Recursive function, at the end, sends the line with the
-    new content, and the line with the rest for analyze
+    with ^ so we only search for the beginning of the line
+    Sends the line with the new content, and the line with the rest for analyze
     If the for analyze is empty return the line with new content
     It is important the order of the calls, because it can identify
     something important in the everything else call, we need for not
@@ -86,6 +84,7 @@ defmodule Parser do
         |> digit_identify()
         |> string_identify()
         |> white_spaces_identify()
+        |> invalid_identify()
         |> searcher()
       else
         new_content
@@ -179,9 +178,7 @@ defmodule Parser do
     def bitwise_operator_identify([new_Content | line]) do
       identifier("^(([\x26])|([\x7C])|([\x7E])|([\x3C])([\x3C])|([\x3E])[\x3E])",
       "bitwise_operators", new_Content, line)
-      #identifier("^((\&)|(\|)|(\^)|(\~)|(\<\<)|(\>\>))", "bitwise_operators", new_Content, line)
-      #identifier("^(([\x26])|([\x7C])|([\x5E])|([\x7E])|([\x3C])([\x3C])|([\x3E])[\x3E])", "bitwise_operators", new_Content, line)
-      #no logre que jalara incluyendo el ^ siempre que lo agrega hace match con todo
+      #"^((\&)|(\|)|(\^)|(\~)|(\<\<)|(\>\>))"
     end
 
 
@@ -193,7 +190,7 @@ defmodule Parser do
     def assigment_operator_identify([new_Content | line]) do
       identifier("^(([\x3D])|([\x2B][\x3D])|([\x2D][\x3D])|([\x2A][\x3D])|([\x2F][\x3D])|([\x25][\x3D]))",
       "assigment_operators", new_Content, line)
-      #identifier("^((=)|(\+=)|(-=)|(\*=)|(\/=)|(%=))", "assigment_operators", new_Content, line)
+      #"^((=)|(\+=)|(-=)|(\*=)|(\/=)|(%=))"
     end
 
 
@@ -204,7 +201,6 @@ defmodule Parser do
     def special_caracter_identify([new_Content | line]) do
       identifier("^(([\x3A])|([\x28])|([\x29])|([\x2E])|([\x2C])|([\x7B])|([\x7D])|([\x5B])|([\x5D]))",
       "special_operators", new_Content, line)
-      #identifier("^([^a-zA-Z0-9_]))", "special_operators", new_Content, line)
     end
 
 
@@ -218,7 +214,7 @@ defmodule Parser do
 
 
     @doc """
-    crear este para cuando nos encontramos un string como ejemplo de string
+    Idenfity strings through regex
     """
     def string_identify([new_Content | line]) do
       identifier("^\".*?\"", "string", new_Content, line)
@@ -226,13 +222,15 @@ defmodule Parser do
 
 
     @doc """
-    identify variables
+    Identify variables through regex
     """
     def variable_identify([new_Content | line]) do
       identifier("^[_a-zA-Z][_a-zA-Z0-9]*", "variable", new_Content, line)
     end
 
-
+   @doc """
+    Identify variables through regex
+    """
     def class_function_identify([new_Content | line]) do
       identifier("^([_a-zA-Z0-9]*\.)?[_a-zA-Z0-9]*(?=[\x28])", "class", new_Content, line)
     end
@@ -245,12 +243,10 @@ defmodule Parser do
     end
 
    @doc """
-    Function that matches every letter, it is important for out code not
-    to cycle
-    calls identifier, sends regex, add corresponding class and send content
+    Function that matches every letter, in case it doesn't match any of the other identifiers
     """
     def invalid_identify([new_Content | line]) do
-      # identifier("+", "invalid", new_Content, line)
+        identifier("^([\S+]*)", "invalid", new_Content, line)
     end
 
     @doc """
@@ -303,7 +299,7 @@ defmodule Parser do
     end
 
    @doc """
-    Write output back to file
+    Get file name without .py and switch to name.html
     """
     def get_html_filename(in_file) do
       name = Regex.run(~r/^[\S+]*(?=\.py)/, in_file)
