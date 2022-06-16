@@ -137,10 +137,7 @@ defmodule Parser do
     calls identifier, sends regex, add corresponding class and send content
     """
     def keyword_identify([new_Content | line]) do
-      identifier("^((and)|(exec)|(not)|(assert)|(finally)|(or)|(break)|(for)
-      |(pass)|(class)|(from)|(print)|(continue)|(global)|(raise)|(def)|(if)|
-      (return)|(del)|(import)|(try)|(elif)|(in)|(while)|(else)|(is)|(with)|
-      (except)|(lambda)|(yield))(?![a-zA-Z0-9])", "keyword", new_Content, line)
+      identifier("^((and)|(exec)|(not)|(assert)|(finally)|(or)|(break)|(for)|(pass)|(class)|(from)|(print)|(continue)|(global)|(raise)|(def)|(if)|(return)|(del)|(import)|(try)|(elif)|(in)|(while)|(else)|(is)|(with)|(except)|(lambda)|(yield))(?![a-zA-Z0-9])", "keyword", new_Content, line)
     end
 
 
