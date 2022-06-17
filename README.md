@@ -31,6 +31,27 @@ For this project we are going to use the following topic:
 -List: Lists are going to be used for that all the lines in the code are readed one by one putting everyone of them inside of a list<br />
 -File I|O: As previously mentioned, the input file is going to be a plain text file code of a programming language and the outputs are going to be an HTML and a CSS file.
 
+## How to run the code instructions? 
+1. Make sure you have installed elixir, with the following commands: 
+```
+sudo apt-get install elixir
+```
+For information on how to install on MacOs or Windows see the following link: https://elixir-lang.org/install.html
+
+3. In the main directory run the following commands:
+
+```
+iex
+c("main1.exs")
+Parser.main(<name_file>)
+```
+
+3. Program will return a <name_file>.html file with the correct coloring
+
+
+## Function Documentation
+
+
 ## References 
 * Article on compilers: https://pgrandinetti.github.io/compilers/page/what-is-a-programming-language-parser/#:~:text=Parsing%20algorithms%20are%20not%20made,%2C%20valid%20for%20that%20grammar).
 * A guide to parsing Algorithms:  https://tomassetti.me/guide-parsing-algorithms-terminology/ 
