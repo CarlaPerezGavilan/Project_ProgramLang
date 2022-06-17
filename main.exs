@@ -246,7 +246,7 @@ defmodule Parser do
     Function that matches every letter, in case it doesn't match any of the other identifiers
     """
     def invalid_identify([new_Content | line]) do
-        identifier("^(.*)", "invalid", new_Content, line)
+        identifier("^([\S+]*)", "invalid", new_Content, line)
     end
 
     @doc """
