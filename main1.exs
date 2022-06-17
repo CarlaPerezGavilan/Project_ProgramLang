@@ -1,11 +1,11 @@
-
 # Language Python Parser
 #
 # Carla Perez Gavilan A01023033
 # Gerardo Angeles A01338190
 # David Medina A01653311
-
+#
 # To run the program: Parser.main("Random.py")
+# 16/06/2022
 
 defmodule Parser do
 
