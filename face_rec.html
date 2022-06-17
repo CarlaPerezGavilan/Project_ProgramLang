@@ -1,0 +1,501 @@
+<!doctype html>
+      <html lang='en'>
+          <head>
+              <meta charset='utf-8'>
+              <title>face_rec.html</title>
+              <style>
+                  .comment {color: gray;}
+                  .keyword {color: blue;}
+                  .parenthesis {color: rgb(255, 0, 72)}
+                  .string {color:rgb(84, 216, 23)}
+                  .normalText {color: rgb(0, 0, 0)}
+                  .function {color:rgb(255, 170, 0)}
+                  .integer {color: darkgreen;}
+                  .white_space {color: black;}
+                  .arithmetic_operators {color: rgb(50,90,150) }
+                  .comparison_operators {color: rgb(200,70,110)}
+                  .assigment_operators {color: rgb(100,0,10) }
+                  .bitwise_operators {color : rgb(180,100,200)}
+                  .invalid {color: rgb(130,50,40)}
+                  .special_operators {color: rgb(10,150,140)}
+                  .digit {color: rgb(229,170,130)}
+                  .string {color: rgb(132, 230, 232)}
+                  .variable {color: rgb(0, 227, 34)} 
+                  .class {color: rgb(245, 66, 176)} 
+              </style>
+          </head>
+          <body>
+          <pre><span class=comment>############################################# IMPORTING ################################################</span><span class=invalid></span>
+<span class=keyword>import</span><span class=white_spaces> </span><span class=invalid>tkinter as tk</span>
+<span class=keyword>from</span><span class=white_spaces> </span><span class=invalid>tkinter import ttk</span>
+<span class=keyword>from</span><span class=white_spaces> </span><span class=invalid>tkinter import messagebox as mess</span>
+<span class=keyword>import</span><span class=white_spaces> </span><span class=invalid>tkinter.simpledialog as tsd</span>
+<span class=keyword>import</span><span class=white_spaces> </span><span class=invalid>cv2,os</span>
+<span class=keyword>import</span><span class=white_spaces> </span><span class=invalid>csv</span>
+<span class=keyword>import</span><span class=white_spaces> </span><span class=invalid>numpy as np</span>
+<span class=keyword>from</span><span class=white_spaces> </span><span class=invalid>PIL import Image</span>
+<span class=keyword>import</span><span class=white_spaces> </span><span class=invalid>pandas as pd</span>
+<span class=keyword>import</span><span class=white_spaces> </span><span class=invalid>datetime</span>
+<span class=keyword>import</span><span class=white_spaces> </span><span class=invalid>time</span>
+
+<span class=comment>############################################# FUNCTIONS ################################################</span><span class=invalid></span>
+
+<span class=keyword>def</span><span class=class> assure_path_exists</span><span class=invalid>(path):</span>
+<span class=white_spaces>    </span><span class=invalid>dir = os.path.dirname(path)</span>
+<span class=white_spaces>    </span><span class=invalid>if not os.path.exists(dir):</span>
+<span class=white_spaces>        </span><span class=invalid>os.makedirs(dir)</span>
+
+<span class=comment>##################################################################################</span><span class=invalid></span>
+
+<span class=keyword>def</span><span class=class> tick</span><span class=invalid>():</span>
+<span class=white_spaces>    </span><span class=invalid>time_string = time.strftime('%H:%M:%S')</span>
+<span class=white_spaces>    </span><span class=invalid>clock.config(text=time_string)</span>
+<span class=white_spaces>    </span><span class=invalid>clock.after(200,tick)</span>
+
+<span class=comment>###################################################################################</span><span class=invalid></span>
+
+<span class=keyword>def</span><span class=class> contact</span><span class=invalid>():</span>
+<span class=white_spaces>    </span><span class=invalid>mess._show(title='Contact us', message="Please contact us on : 'xxxxxxxxxxxxx@gmail.com' ")</span>
+
+<span class=comment>###################################################################################</span><span class=invalid></span>
+
+<span class=keyword>def</span><span class=class> check_haarcascadefile</span><span class=invalid>():</span>
+<span class=white_spaces>    </span><span class=invalid>exists = os.path.isfile("haarcascade_frontalface_default.xml")</span>
+<span class=white_spaces>    </span><span class=invalid>if exists:</span>
+<span class=white_spaces>        </span><span class=invalid>pass</span>
+<span class=white_spaces>    </span><span class=invalid>else:</span>
+<span class=white_spaces>        </span><span class=invalid>mess._show(title='Some file missing', message='Please contact us for help')</span>
+<span class=white_spaces>        </span><span class=invalid>window.destroy()</span>
+
+<span class=comment>###################################################################################</span><span class=invalid></span>
+
+<span class=keyword>def</span><span class=class> save_pass</span><span class=invalid>():</span>
+<span class=white_spaces>    </span><span class=invalid>assure_path_exists("TrainingImageLabel/")</span>
+<span class=white_spaces>    </span><span class=invalid>exists1 = os.path.isfile("TrainingImageLabel\psd.txt")</span>
+<span class=white_spaces>    </span><span class=invalid>if exists1:</span>
+<span class=white_spaces>        </span><span class=invalid>tf = open("TrainingImageLabel\psd.txt", "r")</span>
+<span class=white_spaces>        </span><span class=invalid>key = tf.read()</span>
+<span class=white_spaces>    </span><span class=invalid>else:</span>
+<span class=white_spaces>        </span><span class=invalid>master.destroy()</span>
+<span class=white_spaces>        </span><span class=invalid>new_pas = tsd.askstring('Old Password not found', 'Please enter a new password below', show='*')</span>
+<span class=white_spaces>        </span><span class=invalid>if new_pas == None:</span>
+<span class=white_spaces>            </span><span class=invalid>mess._show(title='No Password Entered', message='Password not set!! Please try again')</span>
+<span class=white_spaces>        </span><span class=invalid>else:</span>
+<span class=white_spaces>            </span><span class=invalid>tf = open("TrainingImageLabel\psd.txt", "w")</span>
+<span class=white_spaces>            </span><span class=invalid>tf.write(new_pas)</span>
+<span class=white_spaces>            </span><span class=invalid>mess._show(title='Password Registered', message='New password was registered successfully!!')</span>
+<span class=white_spaces>            </span><span class=invalid>return</span>
+<span class=white_spaces>    </span><span class=invalid>op = (old.get())</span>
+<span class=white_spaces>    </span><span class=invalid>newp= (new.get())</span>
+<span class=white_spaces>    </span><span class=invalid>nnewp = (nnew.get())</span>
+<span class=white_spaces>    </span><span class=invalid>if (op == key):</span>
+<span class=white_spaces>        </span><span class=invalid>if(newp == nnewp):</span>
+<span class=white_spaces>            </span><span class=invalid>txf = open("TrainingImageLabel\psd.txt", "w")</span>
+<span class=white_spaces>            </span><span class=invalid>txf.write(newp)</span>
+<span class=white_spaces>        </span><span class=invalid>else:</span>
+<span class=white_spaces>            </span><span class=invalid>mess._show(title='Error', message='Confirm new password again!!!')</span>
+<span class=white_spaces>            </span><span class=invalid>return</span>
+<span class=white_spaces>    </span><span class=invalid>else:</span>
+<span class=white_spaces>        </span><span class=invalid>mess._show(title='Wrong Password', message='Please enter correct old password.')</span>
+<span class=white_spaces>        </span><span class=invalid>return</span>
+<span class=white_spaces>    </span><span class=invalid>mess._show(title='Password Changed', message='Password changed successfully!!')</span>
+<span class=white_spaces>    </span><span class=invalid>master.destroy()</span>
+
+<span class=comment>###################################################################################</span><span class=invalid></span>
+
+<span class=keyword>def</span><span class=class> change_pass</span><span class=invalid>():</span>
+<span class=white_spaces>    </span><span class=invalid>global master</span>
+<span class=white_spaces>    </span><span class=invalid>master = tk.Tk()</span>
+<span class=white_spaces>    </span><span class=invalid>master.geometry("400x160")</span>
+<span class=white_spaces>    </span><span class=invalid>master.resizable(False,False)</span>
+<span class=white_spaces>    </span><span class=invalid>master.title("Change Password")</span>
+<span class=white_spaces>    </span><span class=invalid>master.configure(background="white")</span>
+<span class=white_spaces>    </span><span class=invalid>lbl4 = tk.Label(master,text='    Enter Old Password',bg='white',font=('times', 12, ' bold '))</span>
+<span class=white_spaces>    </span><span class=invalid>lbl4.place(x=10,y=10)</span>
+<span class=white_spaces>    </span><span class=invalid>global old</span>
+<span class=white_spaces>    </span><span class=invalid>old=tk.Entry(master,width=25 ,fg="black",relief='solid',font=('times', 12, ' bold '),show='*')</span>
+<span class=white_spaces>    </span><span class=invalid>old.place(x=180,y=10)</span>
+<span class=white_spaces>    </span><span class=invalid>lbl5 = tk.Label(master, text='   Enter New Password', bg='white', font=('times', 12, ' bold '))</span>
+<span class=white_spaces>    </span><span class=invalid>lbl5.place(x=10, y=45)</span>
+<span class=white_spaces>    </span><span class=invalid>global new</span>
+<span class=white_spaces>    </span><span class=invalid>new = tk.Entry(master, width=25, fg="black",relief='solid', font=('times', 12, ' bold '),show='*')</span>
+<span class=white_spaces>    </span><span class=invalid>new.place(x=180, y=45)</span>
+<span class=white_spaces>    </span><span class=invalid>lbl6 = tk.Label(master, text='Confirm New Password', bg='white', font=('times', 12, ' bold '))</span>
+<span class=white_spaces>    </span><span class=invalid>lbl6.place(x=10, y=80)</span>
+<span class=white_spaces>    </span><span class=invalid>global nnew</span>
+<span class=white_spaces>    </span><span class=invalid>nnew = tk.Entry(master, width=25, fg="black", relief='solid',font=('times', 12, ' bold '),show='*')</span>
+<span class=white_spaces>    </span><span class=invalid>nnew.place(x=180, y=80)</span>
+<span class=white_spaces>    </span><span class=invalid>cancel=tk.Button(master,text="Cancel", command=master.destroy ,fg="black"  ,bg="red" ,height=1,width=25 , activebackground = "white" ,font=('times', 10, ' bold '))</span>
+<span class=white_spaces>    </span><span class=invalid>cancel.place(x=200, y=120)</span>
+<span class=white_spaces>    </span><span class=invalid>save1 = tk.Button(master, text="Save", command=save_pass, fg="black", bg="#3ece48", height = 1,width=25, activebackground="white", font=('times', 10, ' bold '))</span>
+<span class=white_spaces>    </span><span class=invalid>save1.place(x=10, y=120)</span>
+<span class=white_spaces>    </span><span class=invalid>master.mainloop()</span>
+
+<span class=comment>#####################################################################################</span><span class=invalid></span>
+
+<span class=keyword>def</span><span class=class> psw</span><span class=invalid>():</span>
+<span class=white_spaces>    </span><span class=invalid>assure_path_exists("TrainingImageLabel/")</span>
+<span class=white_spaces>    </span><span class=invalid>exists1 = os.path.isfile("TrainingImageLabel\psd.txt")</span>
+<span class=white_spaces>    </span><span class=invalid>if exists1:</span>
+<span class=white_spaces>        </span><span class=invalid>tf = open("TrainingImageLabel\psd.txt", "r")</span>
+<span class=white_spaces>        </span><span class=invalid>key = tf.read()</span>
+<span class=white_spaces>    </span><span class=invalid>else:</span>
+<span class=white_spaces>        </span><span class=invalid>new_pas = tsd.askstring('Old Password not found', 'Please enter a new password below', show='*')</span>
+<span class=white_spaces>        </span><span class=invalid>if new_pas == None:</span>
+<span class=white_spaces>            </span><span class=invalid>mess._show(title='No Password Entered', message='Password not set!! Please try again')</span>
+<span class=white_spaces>        </span><span class=invalid>else:</span>
+<span class=white_spaces>            </span><span class=invalid>tf = open("TrainingImageLabel\psd.txt", "w")</span>
+<span class=white_spaces>            </span><span class=invalid>tf.write(new_pas)</span>
+<span class=white_spaces>            </span><span class=invalid>mess._show(title='Password Registered', message='New password was registered successfully!!')</span>
+<span class=white_spaces>            </span><span class=invalid>return</span>
+<span class=white_spaces>    </span><span class=invalid>password = tsd.askstring('Password', 'Enter Password', show='*')</span>
+<span class=white_spaces>    </span><span class=invalid>if (password == key):</span>
+<span class=white_spaces>        </span><span class=invalid>TrainImages()</span>
+<span class=white_spaces>    </span><span class=invalid>elif (password == None):</span>
+<span class=white_spaces>        </span><span class=invalid>pass</span>
+<span class=white_spaces>    </span><span class=invalid>else:</span>
+<span class=white_spaces>        </span><span class=invalid>mess._show(title='Wrong Password', message='You have entered wrong password')</span>
+
+<span class=comment>######################################################################################</span><span class=invalid></span>
+
+<span class=keyword>def</span><span class=class> clear</span><span class=invalid>():</span>
+<span class=white_spaces>    </span><span class=invalid>txt.delete(0, 'end')</span>
+<span class=white_spaces>    </span><span class=invalid>res = "1)Take Images  >>>  2)Save Profile"</span>
+<span class=white_spaces>    </span><span class=invalid>message1.configure(text=res)</span>
+
+
+<span class=keyword>def</span><span class=class> clear2</span><span class=invalid>():</span>
+<span class=white_spaces>    </span><span class=invalid>txt2.delete(0, 'end')</span>
+<span class=white_spaces>    </span><span class=invalid>res = "1)Take Images  >>>  2)Save Profile"</span>
+<span class=white_spaces>    </span><span class=invalid>message1.configure(text=res)</span>
+
+<span class=comment>#######################################################################################</span><span class=invalid></span>
+
+<span class=keyword>def</span><span class=class> TakeImages</span><span class=invalid>():</span>
+<span class=white_spaces>    </span><span class=invalid>check_haarcascadefile()</span>
+<span class=white_spaces>    </span><span class=invalid>columns = ['SERIAL NO.', '', 'ID', '', 'NAME']</span>
+<span class=white_spaces>    </span><span class=invalid>assure_path_exists("StudentDetails/")</span>
+<span class=white_spaces>    </span><span class=invalid>assure_path_exists("TrainingImage/")</span>
+<span class=white_spaces>    </span><span class=invalid>serial = 0</span>
+<span class=white_spaces>    </span><span class=invalid>exists = os.path.isfile("StudentDetails\StudentDetails.csv")</span>
+<span class=white_spaces>    </span><span class=invalid>if exists:</span>
+<span class=white_spaces>        </span><span class=invalid>with open("StudentDetails\StudentDetails.csv", 'r') as csvFile1:</span>
+<span class=white_spaces>            </span><span class=invalid>reader1 = csv.reader(csvFile1)</span>
+<span class=white_spaces>            </span><span class=invalid>for l in reader1:</span>
+<span class=white_spaces>                </span><span class=invalid>serial = serial + 1</span>
+<span class=white_spaces>        </span><span class=invalid>serial = (serial // 2)</span>
+<span class=white_spaces>        </span><span class=invalid>csvFile1.close()</span>
+<span class=white_spaces>    </span><span class=invalid>else:</span>
+<span class=white_spaces>        </span><span class=invalid>with open("StudentDetails\StudentDetails.csv", 'a+') as csvFile1:</span>
+<span class=white_spaces>            </span><span class=invalid>writer = csv.writer(csvFile1)</span>
+<span class=white_spaces>            </span><span class=invalid>writer.writerow(columns)</span>
+<span class=white_spaces>            </span><span class=invalid>serial = 1</span>
+<span class=white_spaces>        </span><span class=invalid>csvFile1.close()</span>
+<span class=white_spaces>    </span><span class=invalid>Id = (txt.get())</span>
+<span class=white_spaces>    </span><span class=invalid>name = (txt2.get())</span>
+<span class=white_spaces>    </span><span class=invalid>if ((name.isalpha()) or (' ' in name)):</span>
+<span class=white_spaces>        </span><span class=invalid>cam = cv2.VideoCapture(0)</span>
+<span class=white_spaces>        </span><span class=invalid>harcascadePath = "haarcascade_frontalface_default.xml"</span>
+<span class=white_spaces>        </span><span class=invalid>detector = cv2.CascadeClassifier(harcascadePath)</span>
+<span class=white_spaces>        </span><span class=invalid>sampleNum = 0</span>
+<span class=white_spaces>        </span><span class=invalid>while (True):</span>
+<span class=white_spaces>            </span><span class=invalid>ret, img = cam.read()</span>
+<span class=white_spaces>            </span><span class=invalid>gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)</span>
+<span class=white_spaces>            </span><span class=invalid>faces = detector.detectMultiScale(gray, 1.3, 5)</span>
+<span class=white_spaces>            </span><span class=invalid>for (x, y, w, h) in faces:</span>
+<span class=white_spaces>                </span><span class=invalid>cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 0), 2)</span>
+<span class=white_spaces>                </span><span class=invalid># incrementing sample number</span>
+<span class=white_spaces>                </span><span class=invalid>sampleNum = sampleNum + 1</span>
+<span class=white_spaces>                </span><span class=invalid># saving the captured face in the dataset folder TrainingImage</span>
+<span class=white_spaces>                </span><span class=invalid>cv2.imwrite("TrainingImage\ " + name + "." + str(serial) + "." + Id + '.' + str(sampleNum) + ".jpg",</span>
+<span class=white_spaces>                            </span><span class=invalid>gray[y:y + h, x:x + w])</span>
+<span class=white_spaces>                </span><span class=invalid># display the frame</span>
+<span class=white_spaces>                </span><span class=invalid>cv2.imshow('Taking Images', img)</span>
+<span class=white_spaces>            </span><span class=invalid># wait for 100 miliseconds</span>
+<span class=white_spaces>            </span><span class=invalid>if cv2.waitKey(100) & 0xFF == ord('q'):</span>
+<span class=white_spaces>                </span><span class=invalid>break</span>
+<span class=white_spaces>            </span><span class=invalid># break if the sample number is morethan 100</span>
+<span class=white_spaces>            </span><span class=invalid>elif sampleNum > 100:</span>
+<span class=white_spaces>                </span><span class=invalid>break</span>
+<span class=white_spaces>        </span><span class=invalid>cam.release()</span>
+<span class=white_spaces>        </span><span class=invalid>cv2.destroyAllWindows()</span>
+<span class=white_spaces>        </span><span class=invalid>res = "Images Taken for ID : " + Id</span>
+<span class=white_spaces>        </span><span class=invalid>row = [serial, '', Id, '', name]</span>
+<span class=white_spaces>        </span><span class=invalid>with open('StudentDetails\StudentDetails.csv', 'a+') as csvFile:</span>
+<span class=white_spaces>            </span><span class=invalid>writer = csv.writer(csvFile)</span>
+<span class=white_spaces>            </span><span class=invalid>writer.writerow(row)</span>
+<span class=white_spaces>        </span><span class=invalid>csvFile.close()</span>
+<span class=white_spaces>        </span><span class=invalid>message1.configure(text=res)</span>
+<span class=white_spaces>    </span><span class=invalid>else:</span>
+<span class=white_spaces>        </span><span class=invalid>if (name.isalpha() == False):</span>
+<span class=white_spaces>            </span><span class=invalid>res = "Enter Correct name"</span>
+<span class=white_spaces>            </span><span class=invalid>message.configure(text=res)</span>
+
+<span class=comment>########################################################################################</span><span class=invalid></span>
+
+<span class=keyword>def</span><span class=class> TrainImages</span><span class=invalid>():</span>
+<span class=white_spaces>    </span><span class=invalid>check_haarcascadefile()</span>
+<span class=white_spaces>    </span><span class=invalid>assure_path_exists("TrainingImageLabel/")</span>
+<span class=white_spaces>    </span><span class=invalid>recognizer = cv2.face_LBPHFaceRecognizer.create()</span>
+<span class=white_spaces>    </span><span class=invalid>harcascadePath = "haarcascade_frontalface_default.xml"</span>
+<span class=white_spaces>    </span><span class=invalid>detector = cv2.CascadeClassifier(harcascadePath)</span>
+<span class=white_spaces>    </span><span class=invalid>faces, ID = getImagesAndLabels("TrainingImage")</span>
+<span class=white_spaces>    </span><span class=invalid>try:</span>
+<span class=white_spaces>        </span><span class=invalid>recognizer.train(faces, np.array(ID))</span>
+<span class=white_spaces>    </span><span class=invalid>except:</span>
+<span class=white_spaces>        </span><span class=invalid>mess._show(title='No Registrations', message='Please Register someone first!!!')</span>
+<span class=white_spaces>        </span><span class=invalid>return</span>
+<span class=white_spaces>    </span><span class=invalid>recognizer.save("TrainingImageLabel\Trainner.yml")</span>
+<span class=white_spaces>    </span><span class=invalid>res = "Profile Saved Successfully"</span>
+<span class=white_spaces>    </span><span class=invalid>message1.configure(text=res)</span>
+<span class=white_spaces>    </span><span class=invalid>message.configure(text='Total Registrations till now  : ' + str(ID[0]))</span>
+
+<span class=comment>############################################################################################3</span><span class=invalid></span>
+
+<span class=keyword>def</span><span class=class> getImagesAndLabels</span><span class=invalid>(path):</span>
+<span class=white_spaces>    </span><span class=invalid># get the path of all the files in the folder</span>
+<span class=white_spaces>    </span><span class=invalid>imagePaths = [os.path.join(path, f) for f in os.listdir(path)]</span>
+<span class=white_spaces>    </span><span class=invalid># create empth face list</span>
+<span class=white_spaces>    </span><span class=invalid>faces = []</span>
+<span class=white_spaces>    </span><span class=invalid># create empty ID list</span>
+<span class=white_spaces>    </span><span class=invalid>Ids = []</span>
+<span class=white_spaces>    </span><span class=invalid># now looping through all the image paths and loading the Ids and the images</span>
+<span class=white_spaces>    </span><span class=invalid>for imagePath in imagePaths:</span>
+<span class=white_spaces>        </span><span class=invalid># loading the image and converting it to gray scale</span>
+<span class=white_spaces>        </span><span class=invalid>pilImage = Image.open(imagePath).convert('L')</span>
+<span class=white_spaces>        </span><span class=invalid># Now we are converting the PIL image into numpy array</span>
+<span class=white_spaces>        </span><span class=invalid>imageNp = np.array(pilImage, 'uint8')</span>
+<span class=white_spaces>        </span><span class=invalid># getting the Id from the image</span>
+<span class=white_spaces>        </span><span class=invalid>ID = int(os.path.split(imagePath)[-1].split(".")[1])</span>
+<span class=white_spaces>        </span><span class=invalid># extract the face from the training image sample</span>
+<span class=white_spaces>        </span><span class=invalid>faces.append(imageNp)</span>
+<span class=white_spaces>        </span><span class=invalid>Ids.append(ID)</span>
+<span class=white_spaces>    </span><span class=invalid>return faces, Ids</span>
+
+<span class=comment>###########################################################################################</span><span class=invalid></span>
+
+<span class=keyword>def</span><span class=class> TrackImages</span><span class=invalid>():</span>
+<span class=white_spaces>    </span><span class=invalid>check_haarcascadefile()</span>
+<span class=white_spaces>    </span><span class=invalid>assure_path_exists("Attendance/")</span>
+<span class=white_spaces>    </span><span class=invalid>assure_path_exists("StudentDetails/")</span>
+<span class=white_spaces>    </span><span class=invalid>for k in tv.get_children():</span>
+<span class=white_spaces>        </span><span class=invalid>tv.delete(k)</span>
+<span class=white_spaces>    </span><span class=invalid>msg = ''</span>
+<span class=white_spaces>    </span><span class=invalid>i = 0</span>
+<span class=white_spaces>    </span><span class=invalid>j = 0</span>
+<span class=white_spaces>    </span><span class=invalid>recognizer = cv2.face.LBPHFaceRecognizer_create()  # cv2.createLBPHFaceRecognizer()</span>
+<span class=white_spaces>    </span><span class=invalid>exists3 = os.path.isfile("TrainingImageLabel\Trainner.yml")</span>
+<span class=white_spaces>    </span><span class=invalid>if exists3:</span>
+<span class=white_spaces>        </span><span class=invalid>recognizer.read("TrainingImageLabel\Trainner.yml")</span>
+<span class=white_spaces>    </span><span class=invalid>else:</span>
+<span class=white_spaces>        </span><span class=invalid>mess._show(title='Data Missing', message='Please click on Save Profile to reset data!!')</span>
+<span class=white_spaces>        </span><span class=invalid>return</span>
+<span class=white_spaces>    </span><span class=invalid>harcascadePath = "haarcascade_frontalface_default.xml"</span>
+<span class=white_spaces>    </span><span class=invalid>faceCascade = cv2.CascadeClassifier(harcascadePath);</span>
+
+<span class=white_spaces>    </span><span class=invalid>cam = cv2.VideoCapture(0)</span>
+<span class=white_spaces>    </span><span class=invalid>font = cv2.FONT_HERSHEY_SIMPLEX</span>
+<span class=white_spaces>    </span><span class=invalid>col_names = ['Id', '', 'Name', '', 'Date', '', 'Time']</span>
+<span class=white_spaces>    </span><span class=invalid>exists1 = os.path.isfile("StudentDetails\StudentDetails.csv")</span>
+<span class=white_spaces>    </span><span class=invalid>if exists1:</span>
+<span class=white_spaces>        </span><span class=invalid>df = pd.read_csv("StudentDetails\StudentDetails.csv")</span>
+<span class=white_spaces>    </span><span class=invalid>else:</span>
+<span class=white_spaces>        </span><span class=invalid>mess._show(title='Details Missing', message='Students details are missing, please check!')</span>
+<span class=white_spaces>        </span><span class=invalid>cam.release()</span>
+<span class=white_spaces>        </span><span class=invalid>cv2.destroyAllWindows()</span>
+<span class=white_spaces>        </span><span class=invalid>window.destroy()</span>
+<span class=white_spaces>    </span><span class=invalid>while True:</span>
+<span class=white_spaces>        </span><span class=invalid>ret, im = cam.read()</span>
+<span class=white_spaces>        </span><span class=invalid>gray = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)</span>
+<span class=white_spaces>        </span><span class=invalid>faces = faceCascade.detectMultiScale(gray, 1.2, 5)</span>
+<span class=white_spaces>        </span><span class=invalid>for (x, y, w, h) in faces:</span>
+<span class=white_spaces>            </span><span class=invalid>cv2.rectangle(im, (x, y), (x + w, y + h), (225, 0, 0), 2)</span>
+<span class=white_spaces>            </span><span class=invalid>serial, conf = recognizer.predict(gray[y:y + h, x:x + w])</span>
+<span class=white_spaces>            </span><span class=invalid>if (conf < 50):</span>
+<span class=white_spaces>                </span><span class=invalid>ts = time.time()</span>
+<span class=white_spaces>                </span><span class=invalid># date = datetime.datetime.fromtimestamp(ts).strftime('%d-%m-%Y')</span>
+<span class=white_spaces>                </span><span class=invalid># timeStamp = datetime.datetime.fromtimestamp(ts).strftime('%H:%M:%S')</span>
+<span class=white_spaces>                </span><span class=invalid>aa = df.loc[df['SERIAL NO.'] == serial]['NAME'].values</span>
+<span class=white_spaces>                </span><span class=invalid>ID = df.loc[df['SERIAL NO.'] == serial]['ID'].values</span>
+<span class=white_spaces>                </span><span class=invalid>ID = str(ID)</span>
+<span class=white_spaces>                </span><span class=invalid>ID = ID[1:-1]</span>
+<span class=white_spaces>                </span><span class=invalid>bb = str(aa)</span>
+<span class=white_spaces>                </span><span class=invalid>bb = bb[2:-2]</span>
+<span class=white_spaces>                </span><span class=invalid>attendance = [str(ID), '', bb, '', str(date), '', str(timeStamp)]</span>
+
+<span class=white_spaces>            </span><span class=invalid>else:</span>
+<span class=white_spaces>                </span><span class=invalid>Id = 'Unknown'</span>
+<span class=white_spaces>                </span><span class=invalid>bb = str(Id)</span>
+<span class=white_spaces>            </span><span class=invalid>cv2.putText(im, str(bb), (x, y + h), font, 1, (255, 255, 255), 2)</span>
+<span class=white_spaces>        </span><span class=invalid>cv2.imshow('Taking Attendance', im)</span>
+<span class=white_spaces>        </span><span class=invalid>if (cv2.waitKey(1) == ord('q')):</span>
+<span class=white_spaces>            </span><span class=invalid>break</span>
+<span class=white_spaces>    </span><span class=invalid>ts = time.time()</span>
+<span class=white_spaces>    </span><span class=invalid>date = datetime.datetime.fromtimestamp(ts).strftime('%d-%m-%Y')</span>
+<span class=white_spaces>    </span><span class=invalid>exists = os.path.isfile("Attendance\Attendance_" + date + ".csv")</span>
+<span class=white_spaces>    </span><span class=invalid>if exists:</span>
+<span class=white_spaces>        </span><span class=invalid>with open("Attendance\Attendance_" + date + ".csv", 'a+') as csvFile1:</span>
+<span class=white_spaces>            </span><span class=invalid>writer = csv.writer(csvFile1)</span>
+<span class=white_spaces>            </span><span class=invalid>writer.writerow(attendance)</span>
+<span class=white_spaces>        </span><span class=invalid>csvFile1.close()</span>
+<span class=white_spaces>    </span><span class=invalid>else:</span>
+<span class=white_spaces>        </span><span class=invalid>with open("Attendance\Attendance_" + date + ".csv", 'a+') as csvFile1:</span>
+<span class=white_spaces>            </span><span class=invalid>writer = csv.writer(csvFile1)</span>
+<span class=white_spaces>            </span><span class=invalid>writer.writerow(col_names)</span>
+<span class=white_spaces>            </span><span class=invalid>writer.writerow(attendance)</span>
+<span class=white_spaces>        </span><span class=invalid>csvFile1.close()</span>
+<span class=white_spaces>    </span><span class=invalid>with open("Attendance\Attendance_" + date + ".csv", 'r') as csvFile1:</span>
+<span class=white_spaces>        </span><span class=invalid>reader1 = csv.reader(csvFile1)</span>
+<span class=white_spaces>        </span><span class=invalid>for lines in reader1:</span>
+<span class=white_spaces>            </span><span class=invalid>i = i + 1</span>
+<span class=white_spaces>            </span><span class=invalid>if (i > 1):</span>
+<span class=white_spaces>                </span><span class=invalid>if (i % 2 != 0):</span>
+<span class=white_spaces>                    </span><span class=invalid>iidd = str(lines[0]) + '   '</span>
+<span class=white_spaces>                    </span><span class=invalid>tv.insert('', 0, text=iidd, values=(str(lines[2]), str(lines[4]), str(lines[6])))</span>
+<span class=white_spaces>    </span><span class=invalid>csvFile1.close()</span>
+<span class=white_spaces>    </span><span class=invalid>cam.release()</span>
+<span class=white_spaces>    </span><span class=invalid>cv2.destroyAllWindows()</span>
+
+<span class=comment>######################################## USED STUFFS ############################################</span><span class=invalid></span>
+
+<span class=keyword>global</span><span class=white_spaces> </span><span class=invalid>key</span>
+<span class=variable>key</span><span class=white_spaces> </span><span class=invalid>= ''</span>
+
+<span class=variable>ts</span><span class=white_spaces> </span><span class=invalid>= time.time()</span>
+<span class=variable>date</span><span class=white_spaces> </span><span class=invalid>= datetime.datetime.fromtimestamp(ts).strftime('%d-%m-%Y')</span>
+<span class=variable>day</span><span class=invalid>,month,year=date.split("-")</span>
+
+<span class=variable>mont</span><span class=invalid>={'01':'January',</span>
+<span class=white_spaces>      </span><span class=invalid>'02':'February',</span>
+<span class=white_spaces>      </span><span class=invalid>'03':'March',</span>
+<span class=white_spaces>      </span><span class=invalid>'04':'April',</span>
+<span class=white_spaces>      </span><span class=invalid>'05':'May',</span>
+<span class=white_spaces>      </span><span class=invalid>'06':'June',</span>
+<span class=white_spaces>      </span><span class=invalid>'07':'July',</span>
+<span class=white_spaces>      </span><span class=invalid>'08':'August',</span>
+<span class=white_spaces>      </span><span class=invalid>'09':'September',</span>
+<span class=white_spaces>      </span><span class=invalid>'10':'October',</span>
+<span class=white_spaces>      </span><span class=invalid>'11':'November',</span>
+<span class=white_spaces>      </span><span class=invalid>'12':'December'</span>
+<span class=white_spaces>      </span><span class=invalid>}</span>
+
+<span class=comment>######################################## GUI FRONT-END ###########################################</span><span class=invalid></span>
+
+<span class=variable>window</span><span class=white_spaces> </span><span class=invalid>= tk.Tk()</span>
+<span class=class>window.geometry</span><span class=invalid>("1280x720")</span>
+<span class=class>window.resizable</span><span class=invalid>(True,False)</span>
+<span class=class>window.title</span><span class=invalid>("Attendance System")</span>
+<span class=class>window.configure</span><span class=invalid>(background='#262523')</span>
+
+<span class=variable>frame1</span><span class=white_spaces> </span><span class=invalid>= tk.Frame(window, bg="#00aeff")</span>
+<span class=class>frame1.place</span><span class=invalid>(relx=0.11, rely=0.17, relwidth=0.39, relheight=0.80)</span>
+
+<span class=variable>frame2</span><span class=white_spaces> </span><span class=invalid>= tk.Frame(window, bg="#00aeff")</span>
+<span class=class>frame2.place</span><span class=invalid>(relx=0.51, rely=0.17, relwidth=0.38, relheight=0.80)</span>
+
+<span class=variable>message3</span><span class=white_spaces> </span><span class=invalid>= tk.Label(window, text="Face Recognition Based Attendance System" ,fg="white",bg="#262523" ,width=55 ,height=1,font=('times', 29, ' bold '))</span>
+<span class=class>message3.place</span><span class=invalid>(x=10, y=10)</span>
+
+<span class=variable>frame3</span><span class=white_spaces> </span><span class=invalid>= tk.Frame(window, bg="#c4c6ce")</span>
+<span class=class>frame3.place</span><span class=invalid>(relx=0.52, rely=0.09, relwidth=0.09, relheight=0.07)</span>
+
+<span class=variable>frame4</span><span class=white_spaces> </span><span class=invalid>= tk.Frame(window, bg="#c4c6ce")</span>
+<span class=class>frame4.place</span><span class=invalid>(relx=0.36, rely=0.09, relwidth=0.16, relheight=0.07)</span>
+
+<span class=variable>datef</span><span class=white_spaces> </span><span class=invalid>= tk.Label(frame4, text = day+"-"+mont[month]+"-"+year+"  |  ", fg="orange",bg="#262523" ,width=55 ,height=1,font=('times', 22, ' bold '))</span>
+<span class=class>datef.pack</span><span class=invalid>(fill='both',expand=1)</span>
+
+<span class=variable>clock</span><span class=white_spaces> </span><span class=invalid>= tk.Label(frame3,fg="orange",bg="#262523" ,width=55 ,height=1,font=('times', 22, ' bold '))</span>
+<span class=class>clock.pack</span><span class=invalid>(fill='both',expand=1)</span>
+<span class=class>tick</span><span class=invalid>()</span>
+
+<span class=variable>head2</span><span class=white_spaces> </span><span class=invalid>= tk.Label(frame2, text="                       For New Registrations                       ", fg="black",bg="#3ece48" ,font=('times', 17, ' bold ') )</span>
+<span class=class>head2.grid</span><span class=invalid>(row=0,column=0)</span>
+
+<span class=variable>head1</span><span class=white_spaces> </span><span class=invalid>= tk.Label(frame1, text="                       For Already Registered                       ", fg="black",bg="#3ece48" ,font=('times', 17, ' bold ') )</span>
+<span class=class>head1.place</span><span class=invalid>(x=0,y=0)</span>
+
+<span class=variable>lbl</span><span class=white_spaces> </span><span class=invalid>= tk.Label(frame2, text="Enter ID",width=20  ,height=1  ,fg="black"  ,bg="#00aeff" ,font=('times', 17, ' bold ') )</span>
+<span class=class>lbl.place</span><span class=invalid>(x=80, y=55)</span>
+
+<span class=variable>txt</span><span class=white_spaces> </span><span class=invalid>= tk.Entry(frame2,width=32 ,fg="black",font=('times', 15, ' bold '))</span>
+<span class=class>txt.place</span><span class=invalid>(x=30, y=88)</span>
+
+<span class=variable>lbl2</span><span class=white_spaces> </span><span class=invalid>= tk.Label(frame2, text="Enter Name",width=20  ,fg="black"  ,bg="#00aeff" ,font=('times', 17, ' bold '))</span>
+<span class=class>lbl2.place</span><span class=invalid>(x=80, y=140)</span>
+
+<span class=variable>txt2</span><span class=white_spaces> </span><span class=invalid>= tk.Entry(frame2,width=32 ,fg="black",font=('times', 15, ' bold ')  )</span>
+<span class=class>txt2.place</span><span class=invalid>(x=30, y=173)</span>
+
+<span class=variable>message1</span><span class=white_spaces> </span><span class=invalid>= tk.Label(frame2, text="1)Take Images  >>>  2)Save Profile" ,bg="#00aeff" ,fg="black"  ,width=39 ,height=1, activebackground = "yellow" ,font=('times', 15, ' bold '))</span>
+<span class=class>message1.place</span><span class=invalid>(x=7, y=230)</span>
+
+<span class=variable>message</span><span class=white_spaces> </span><span class=invalid>= tk.Label(frame2, text="" ,bg="#00aeff" ,fg="black"  ,width=39,height=1, activebackground = "yellow" ,font=('times', 16, ' bold '))</span>
+<span class=class>message.place</span><span class=invalid>(x=7, y=450)</span>
+
+<span class=variable>lbl3</span><span class=white_spaces> </span><span class=invalid>= tk.Label(frame1, text="Attendance",width=20  ,fg="black"  ,bg="#00aeff"  ,height=1 ,font=('times', 17, ' bold '))</span>
+<span class=class>lbl3.place</span><span class=invalid>(x=100, y=115)</span>
+
+<span class=variable>res</span><span class=invalid>=0</span>
+<span class=variable>exists</span><span class=white_spaces> </span><span class=invalid>= os.path.isfile("StudentDetails\StudentDetails.csv")</span>
+<span class=keyword>if</span><span class=white_spaces> </span><span class=invalid>exists:</span>
+<span class=white_spaces>    </span><span class=invalid>with open("StudentDetails\StudentDetails.csv", 'r') as csvFile1:</span>
+<span class=white_spaces>        </span><span class=invalid>reader1 = csv.reader(csvFile1)</span>
+<span class=white_spaces>        </span><span class=invalid>for l in reader1:</span>
+<span class=white_spaces>            </span><span class=invalid>res = res + 1</span>
+<span class=white_spaces>    </span><span class=invalid>res = (res // 2) - 1</span>
+<span class=white_spaces>    </span><span class=invalid>csvFile1.close()</span>
+<span class=keyword>else</span><span class=special_operators>:</span><span class=invalid></span>
+<span class=white_spaces>    </span><span class=invalid>res = 0</span>
+<span class=class>message.configure</span><span class=invalid>(text='Total Registrations till now  : '+str(res))</span>
+
+<span class=comment>##################### MENUBAR #################################</span><span class=invalid></span>
+
+<span class=variable>menubar</span><span class=white_spaces> </span><span class=invalid>= tk.Menu(window,relief='ridge')</span>
+<span class=variable>filemenu</span><span class=white_spaces> </span><span class=invalid>= tk.Menu(menubar,tearoff=0)</span>
+<span class=class>filemenu.add_command</span><span class=invalid>(label='Change Password', command = change_pass)</span>
+<span class=class>filemenu.add_command</span><span class=invalid>(label='Contact Us', command = contact)</span>
+<span class=class>filemenu.add_command</span><span class=invalid>(label='Exit',command = window.destroy)</span>
+<span class=class>menubar.add_cascade</span><span class=invalid>(label='Help',font=('times', 29, ' bold '),menu=filemenu)</span>
+
+<span class=comment>################## TREEVIEW ATTENDANCE TABLE ####################</span><span class=invalid></span>
+
+<span class=variable>tv</span><span class=invalid>= ttk.Treeview(frame1,height =13,columns = ('name','date','time'))</span>
+<span class=class>tv.column</span><span class=invalid>('#0',width=82)</span>
+<span class=class>tv.column</span><span class=invalid>('name',width=130)</span>
+<span class=class>tv.column</span><span class=invalid>('date',width=133)</span>
+<span class=class>tv.column</span><span class=invalid>('time',width=133)</span>
+<span class=class>tv.grid</span><span class=invalid>(row=2,column=0,padx=(0,0),pady=(150,0),columnspan=4)</span>
+<span class=class>tv.heading</span><span class=invalid>('#0',text ='ID')</span>
+<span class=class>tv.heading</span><span class=invalid>('name',text ='NAME')</span>
+<span class=class>tv.heading</span><span class=invalid>('date',text ='DATE')</span>
+<span class=class>tv.heading</span><span class=invalid>('time',text ='TIME')</span>
+
+<span class=comment>###################### SCROLLBAR ################################</span><span class=invalid></span>
+
+<span class=variable>scroll</span><span class=invalid>=ttk.Scrollbar(frame1,orient='vertical',command=tv.yview)</span>
+<span class=class>scroll.grid</span><span class=invalid>(row=2,column=4,padx=(0,100),pady=(150,0),sticky='ns')</span>
+<span class=class>tv.configure</span><span class=invalid>(yscrollcommand=scroll.set)</span>
+
+<span class=comment>###################### BUTTONS ##################################</span><span class=invalid></span>
+
+<span class=variable>clearButton</span><span class=white_spaces> </span><span class=invalid>= tk.Button(frame2, text="Clear", command=clear  ,fg="black"  ,bg="#ea2a2a"  ,width=11 ,activebackground = "white" ,font=('times', 11, ' bold '))</span>
+<span class=class>clearButton.place</span><span class=invalid>(x=335, y=86)</span>
+<span class=variable>clearButton2</span><span class=white_spaces> </span><span class=invalid>= tk.Button(frame2, text="Clear", command=clear2  ,fg="black"  ,bg="#ea2a2a"  ,width=11 , activebackground = "white" ,font=('times', 11, ' bold '))</span>
+<span class=class>clearButton2.place</span><span class=invalid>(x=335, y=172)</span>
+<span class=variable>takeImg</span><span class=white_spaces> </span><span class=invalid>= tk.Button(frame2, text="Take Images", command=TakeImages  ,fg="white"  ,bg="blue"  ,width=34  ,height=1, activebackground = "white" ,font=('times', 15, ' bold '))</span>
+<span class=class>takeImg.place</span><span class=invalid>(x=30, y=300)</span>
+<span class=variable>trainImg</span><span class=white_spaces> </span><span class=invalid>= tk.Button(frame2, text="Save Profile", command=psw ,fg="white"  ,bg="blue"  ,width=34  ,height=1, activebackground = "white" ,font=('times', 15, ' bold '))</span>
+<span class=class>trainImg.place</span><span class=invalid>(x=30, y=380)</span>
+<span class=variable>trackImg</span><span class=white_spaces> </span><span class=invalid>= tk.Button(frame1, text="Take Attendance", command=TrackImages  ,fg="black"  ,bg="yellow"  ,width=35  ,height=1, activebackground = "white" ,font=('times', 15, ' bold '))</span>
+<span class=class>trackImg.place</span><span class=invalid>(x=30,y=50)</span>
+<span class=variable>quitWindow</span><span class=white_spaces> </span><span class=invalid>= tk.Button(frame1, text="Quit", command=window.destroy  ,fg="black"  ,bg="red"  ,width=35 ,height=1, activebackground = "white" ,font=('times', 15, ' bold '))</span>
+<span class=class>quitWindow.place</span><span class=invalid>(x=30, y=450)</span>
+
+<span class=comment>##################### END ######################################</span><span class=invalid></span>
+
+<span class=class>window.configure</span><span class=invalid>(menu=menubar)</span>
+<span class=class>window.mainloop</span><span class=invalid>()</span>
+
+<span class=comment>####################################################################################################</span><span class=invalid></span></pre></body>
+      </html>

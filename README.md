@@ -31,6 +31,9 @@ For this project we are going to use the following topic:
 -List: Lists are going to be used for that all the lines in the code are readed one by one putting everyone of them inside of a list<br />
 -File I|O: As previously mentioned, the input file is going to be a plain text file code of a programming language and the outputs are going to be an HTML and a CSS file.
 
+## Functionality Diagram
+
+
 ## How to run the code instructions? 
 1. Make sure you have installed elixir, with the following commands: 
 ```
@@ -42,14 +45,20 @@ For information on how to install on MacOs or Windows see the following link: ht
 
 ```
 iex
-c("main1.exs")
-Parser.main(<name_file>)
+c("main.exs")
+Parser.main(<name_file>.py)
 ```
+**IMPORTANT NOTE:** The file should be in python3 
 
 3. Program will return a <name_file>.html file with the correct coloring
 
 
 ## Function Documentation
+#### main(in_filename):
+Main function that recieves .py file and returns .html file with correct coloring
+#### read_file(file_name):
+Function that reads file and returns list of lines (string format) in file
+
 
 
 ## References 
